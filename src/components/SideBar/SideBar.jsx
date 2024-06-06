@@ -1,9 +1,8 @@
-import cx from "classnames";
-
-import s from "./SideBar.module.scss";
 import Sider from "antd/es/layout/Sider";
 import { Menu } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useContext, useMemo } from "react";
+import AuthContext from "@src/context/AuthContext";
 
 const getItem = (label, key, icon, children, type) => {
   return {
@@ -14,28 +13,43 @@ const getItem = (label, key, icon, children, type) => {
     type,
   };
 };
-const items = [
-  getItem(<Link to='/attendance'>Ваши занятия</Link>, "1"),
-  getItem(<Link>Посещаемость</Link>, "2"),
-  getItem(<Link>Группы</Link>, "3"),
-  getItem(<Link>Предметы</Link>, "4"),
-  getItem("Navigation One", "sub1", null, [
-    getItem("Option 5", "5"),
-    getItem("Option 6", "6"),
-    getItem("Option 7", "7"),
-    getItem("Option 8", "8"),
-  ]),
-  getItem("Navigation Two", "sub2", null, [
-    getItem("Option 9", "9"),
-    getItem("Option 10", "10"),
-    getItem("Submenu", "sub3", null, [getItem("Option 11", "11"), getItem("Option 12", "12")]),
-  ]),
-];
 
 const SideBar = ({ className }) => {
+  const location = useLocation();
+  const attendance = location.pathname.startsWith("/attendance") ? ["/attendance"] : [];
+  const journal = location.pathname.startsWith("/journal") ? ["/journal"] : [];
+  const paperJournal = location.pathname.startsWith("/paperJournal") ? ["/paperJournal"] : [];
+  const { user } = useContext(AuthContext);
+  const items = useMemo(
+    () => [
+      getItem(<Link to='/attendance'>Ваши занятия</Link>, "/attendance"),
+      getItem(<Link to='/journal'>Журнал по предмету</Link>, "/journal"),
+      getItem(
+        user.type === "student" ? (
+          <Link to={`/paperJournal/${user.group.name}/${user.group.id}`}>Журнал группы</Link>
+        ) : (
+          <Link to='/paperJournal'>Журнал группы</Link>
+        ),
+        "/paperJournal",
+      ),
+      // getItem(<Link to='/calendar'>Календарь</Link>, "/calendar"),
+      getItem(<Link to='/students'>Студенты</Link>, "/students"),
+      getItem(<Link to='/teachers'>Преподаватели</Link>, "/teachers"),
+      getItem(<Link to='/groups'>Группы</Link>, "/groups"),
+    ],
+    [user],
+  );
+
   return (
-    <Sider collapsed={false} className={cx(className, s.root)}>
-      <Menu defaultSelectedKeys={["1"]} defaultOpenKeys={["sub1"]} theme='dark' mode='inline' items={items} />
+    <Sider breakpoint='lg' collapsedWidth='0' className={className}>
+      <Menu
+        selectedKeys={[...attendance, ...journal, ...paperJournal]}
+        defaultSelectedKeys={["1"]}
+        defaultOpenKeys={["sub1"]}
+        theme='dark'
+        mode='inline'
+        items={items}
+      />
     </Sider>
   );
 };

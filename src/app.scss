@@ -1,1 +1,78 @@
 @import "scss/reset";
+
+.timeTable {
+  .sideBur {
+    color: #ffffff;
+  }
+
+  .header {
+    height: 60px;
+    color: #ffffff;
+
+    &-container {
+      height: 100%;
+    }
+
+    &-username {
+      color: #ffffff;
+    }
+  }
+
+  .content {
+    min-height: calc(100vh - 60px);
+  }
+
+  .ant-breadcrumb {
+    margin: 10px;
+  }
+
+  .ant-table-column-sorter {
+    width: 10px;
+  }
+
+  .anticon-filter {
+    width: 10px;
+  }
+
+  .attendReport {
+    display: flex;
+
+    &-info {
+      width: 200px;
+    }
+
+    &-table {
+      flex: auto;
+    }
+
+    &-card {
+      height: 100%;
+      padding: 0;
+    }
+  }
+
+  .ant-layout-sider-zero-width-trigger {
+    top: -50px;
+  }
+
+  .attendanceDetail {
+    .ant-card-body {
+      padding: 0;
+    }
+  }
+}
+
+@media (width <= 800px) {
+  .attendReport {
+    flex-direction: column;
+
+    &-info {
+      flex: auto;
+      min-width: 100%;
+    }
+
+    &-table {
+      flex: auto;
+    }
+  }
+}
